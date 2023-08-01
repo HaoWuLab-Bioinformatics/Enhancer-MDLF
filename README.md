@@ -22,7 +22,7 @@ scikit-learn
 numpy  
 See requirements.txt for all detailed libraries  
 ## Usage
-First, you should extract features of enhancers, and run the script to extract dna2vec-based features and motif-based features as follows:
+First, you should extract features of enhancers, and run the script to extract dna2vec-based features and motif-based features as follows:  
 `python dna2vec_code.py`  
 `python motif_find.py`  
 Then run the script as follows to compile and run Enhancer-MDLF:  
