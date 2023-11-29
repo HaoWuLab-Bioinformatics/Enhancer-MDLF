@@ -17,7 +17,6 @@ The file "**SHAP.py**" is the code for exploring important motifs.
 ## Dependency
 Python 3.8  
 tensorflow 2.2.0  
-keras 2.3.1  
 scikit-learn  
 numpy  
 See requirements.txt for all detailed libraries  
