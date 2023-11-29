@@ -27,7 +27,7 @@ training set data : 'data/train/${cell line name}.fasta'  (**e.g.** 'data/train/
 training set label : 'data/train/${cell line name}_y_train.txt'  (**e.g.** 'data/train/GM12878_y_train.txt')  
 test set data : 'data/test/${cell line name}.fasta'  (**e.g.** 'data/test/GM12878.fasta')  
 test set label : 'data/test/${cell line name}_y_test.txt'  (**e.g.** 'data/test/GM12878_y_test.txt')  
-If users want to run their own dataset using Enhancer-MDLF, please organize the data in the format described above.  
+If users want to run Enhancer-MDLF using their own dataset , please organize the data in the format described above.  
 ### Step 1. Extract features of enhancers
 Before running Enhancer-MDLF,users should extract features of enhancers through run the script to extract dna2vec-based features and motif-based features as follows:  
 #### necessary input  
