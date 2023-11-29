@@ -22,12 +22,34 @@ scikit-learn
 numpy  
 See requirements.txt for all detailed libraries  
 ## Usage
-First, you should extract features of enhancers, and run the script to extract dna2vec-based features and motif-based features as follows:  
-`python dna2vec_code.py`  
-`python motif_find.py`  
-Then run the script as follows to compile and run Enhancer-MDLF:  
-`python main.py`  
-Note that the variable 'cell_lines' needs to be manually changed to the predicted cell lines.  
+### Step 0. Prepare dataset
+We have provided enhancer training and test set data and labels for eight cell lines in the following directory:  
+training set data : 'data/train/${cell line name}.fasta'  (**e.g.** 'data/train/GM12878.fasta')  
+training set label : 'data/train/${cell line name}_y_train.txt'  (**e.g.** 'data/train/GM12878_y_train.txt')  
+test set data : 'data/test/${cell line name}.fasta'  (**e.g.** 'data/test/GM12878.fasta')  
+test set label : 'data/test/${cell line name}_y_test.txt'  (**e.g.** 'data/test/GM12878_y_test.txt')  
+If users want to run their own dataset using Enhancer-MDLF, please organize the data in the format described above.  
+### Step 1. Extract features of enhancers
+Before running Enhancer-MDLF,users should extract features of enhancers through run the script to extract dna2vec-based features and motif-based features as follows:  
+#### necessary input  
+input = 'the data file from which you want to extract features.The file naming format is the same as in step 0.'  
+cell_line = 'the cell line name for feature exrtraction'  
+set = 'the extracted data for training or testing'  
+#### run the script
+`python dna2vec_code.py --input_file ${input} --cell_line ${cell_line} --set ${set}`   
+**e.g.**`python dna2vec_code.py --input_file data/train/GM12878.fasta --cell_line GM12878 --set train`  
+**e.g.**`python dna2vec_code.py --input_file data/test/GM12878.fasta --cell_line GM12878 --set test`  
+`python motif_find.py --input_file ${input} --cell_line ${cell_line} --set ${set}`  
+**e.g.**`python motif_find.py --input_file data/train/GM12878.fasta --cell_line GM12878 --set train`  
+**e.g.**`python motif_find.py --input_file data/test/GM12878.fasta --cell_line GM12878 --set test`  
+The output feature files will be saved in the 'feature' directory
+### step 2. Run Enhancer-MDLF:  
+Users can run the script as follows to compile and run Enhancer-MDLF:    
+#### necessary input  
+cell_line = 'the cell line name for train and prediction'  
+#### run the script
+`python main.py --cell_line ${cell_line}`    
+e.g.`python main.py --cell_line GM12878`   
 ## Reference
 [1] Liu B, Fang L, Long R, et al. iEnhancer-2L: A two-layer predictor for identifying enhancers and their strength by pseudo k-tuple nucleotide composition. Bioinformatics 2016; 32:362–369  
 [2] Ng P. dna2vec: Consistent vector representations of variable-length k-mers. arXiv preprint arXiv 2017;1701.06279
