@@ -42,7 +42,7 @@ set = 'the extracted data for training or testing'
 **e.g.**`python motif_find.py --input_file data/train/GM12878.fasta --cell_line GM12878 --set train`  
 **e.g.**`python motif_find.py --input_file data/test/GM12878.fasta --cell_line GM12878 --set test`  
 The output feature files will be saved in the 'feature' directory
-### step 2. Run Enhancer-MDLF:  
+### Step 2. Run Enhancer-MDLF:  
 Users can run the script as follows to compile and run Enhancer-MDLF:    
 #### necessary input  
 cell_line = 'the cell line name for train and prediction'  
