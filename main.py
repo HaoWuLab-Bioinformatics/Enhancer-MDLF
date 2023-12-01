@@ -1,3 +1,4 @@
+import argparse
 import os
 
 from matplotlib import pyplot as plt
@@ -16,8 +17,23 @@ from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras import backend as K
 
-import os
+parser = argparse.ArgumentParser(description='Train models.')
+parser.add_argument('--lr',default=0.0001,help='learning rate')
+parser.add_argument('--kernel_num',default=64,help='kernel_num for model')
+parser.add_argument('--kernel_size',default=7,help='kernel_size for model')
+parser.add_argument('--pool_size',default=2,help='kernel_size for model')
+parser.add_argument('--max_epoch',default=200,help='max_epoch for training')
+parser.add_argument('--batch_size',default=100,help='max_epoch for training')
+parser.add_argument('--dropout_rate1',default=0.6,help='dropout_rate for model before concatenate')
+parser.add_argument('--dropout_rate2',default=0.5,help='dropout_rate for mdoel after concatenate')
+parser.add_argument('--stride',default=3,help='stride for model')
+parser.add_argument('--alpha',default=0.5,help='alpha for focal loss')
+parser.add_argument('--gamma',default=3,help='gamma for focal loss')
+parser.add_argument('--cell_line',required=True,help='cell line for train and prediction')
 
+
+
+args = parser.parse_args()
 def EvaluateMetrics(y_test, proba, label):
     acc = accuracy_score(y_test, label)
     fpr, tpr, thresholdTest = roc_curve(y_test, proba)
@@ -67,16 +83,16 @@ def noramlization(data, filename):
 
 
 network.set_seed(2023)
-cell_lines = 'GM12878'
+cell_lines =args.cell_line
 file_train = 'data/train/' + cell_lines + '.fasta'
-x_train_dna2vec = np.loadtxt('feature/dna2veck3/' + cell_lines + '_train_dna2veck3.txt', )
-x_train_motif = np.loadtxt('feature/motifcount/pvalue0.0001/' + cell_lines + '_train_motif.txt')
+x_train_dna2vec = np.loadtxt('feature/' + cell_lines + '_train_dna2vec.txt', )
+x_train_motif = np.loadtxt('feature/' + cell_lines + '_train_motif.txt')
 x_train_motif = noramlization(x_train_motif, file_train)
 y_train = np.loadtxt('data/train/' + cell_lines + '_y_train.txt')
 
 file_test = 'data/test/' + cell_lines + '.fasta'
-x_test_dna2vec = np.loadtxt('feature/dna2veck3/' + cell_lines + '_test_dna2veck3.txt')
-x_test_motif = np.loadtxt('feature/motifcount/pvalue0.0001/' + cell_lines + '_test_motif.txt')
+x_test_dna2vec = np.loadtxt('feature/' + cell_lines + '_test_dna2vec.txt')
+x_test_motif = np.loadtxt('feature/' + cell_lines + '_test_motif.txt')
 x_test_motif = noramlization(x_test_motif, file_test)
 y_test = np.loadtxt('data/test/' + cell_lines + '_y_test.txt')
 
@@ -93,17 +109,17 @@ data_shape_dna2vec = x_train_dna2vec.shape[1:3]
 data_shape_motif = x_train_motif.shape[1:2]
 
 # parameter setting
-learning_rate = 0.0001
-kernel_num = 64
-kernel_size = 7
-pool_size = 2
-alpha = 0.5
-gamma = 3
-MAX_EPOCH = 200
-BATCH_SIZE = 100
-dropout_rate1 = 0.6
-dropout_rate2 = 0.5
-stride = 3
+learning_rate = args.lr
+kernel_num = args.kernel_num
+kernel_size = args.kernel_size
+pool_size = args.pool_size
+alpha = args.alpha
+gamma = args.gamma
+MAX_EPOCH = args.max_epoch
+BATCH_SIZE = args.batch_size
+dropout_rate1 = args.dropout_rate1
+dropout_rate2 = args.dropout_rate2
+stride = args.stride
 
 LOSS = binary_focal_loss(alpha, gamma)
 model = network.Enhancer_MDLF(data_shape_dna2vec, data_shape_motif, kernel_num, kernel_size, pool_size,

@@ -1,6 +1,13 @@
+import argparse
+
 import numpy as np
 
-
+import os
+parser = argparse.ArgumentParser(description='Extract motif Features')
+parser.add_argument('--input_file',required=True,help='Input file (cell_line.fasta) e.g.data/train/GM12878.fasta')
+parser.add_argument('--cell_line',required=True,help='the extracted dataset name e.g. GM12878')
+parser.add_argument('--set',required=True,help='the extracted dataset for training or testing e.g. train')
+args = parser.parse_args()
 def motif_compare(seq, motif, threshold):
     num = len(seq)
     seq = seq.upper()
@@ -36,7 +43,6 @@ for line in fmotif.readlines():
 
 for key in motifs.keys():
     motifs[key] = np.array(motifs[key], dtype="float64")
-print(motifs)
 
 fthre = open("motif/HOCOMOCOv11_core_HUMAN_mono_homer_format_0.0001.txt", 'r')
 thresholds = {}
@@ -49,36 +55,34 @@ for line in fthre.readlines():
             thresholds[key] = key_val[2]
 for key in thresholds.keys():
     thresholds[key] = np.array(thresholds[key], dtype="float64")
-print(thresholds)
 
-# cell_lines = ['NHLF', 'GM12878', 'HEK293', 'HMEC', 'HSMM', 'HUVEC', 'K562', 'NHEK', 'enhancerdata']
-# cell_lines = ['enhancerdata']
-cell_lines = ['HMEC']
-for cell_line in cell_lines:
-    for set in ['train', 'test']:
-        # for set in ['test']:
-        filename = 'data/' + set + '/' + cell_line + '.fasta'
-        fseq = open(filename, 'r')
-        sequences = []
-        counts = []
+input_file = args.input_file
+cell_line=args.cell_line
+set =args.set
+fseq = open(input_file, 'r')
+sequences = []
+counts = []
+count = 0
+for line in fseq.readlines():
+    if line[0] != ' ':
+        if line[0] != '>':
+            sequences.append(line.upper().strip('\n'))
+for number in range(len(sequences)):
+    for key in motifs.keys():
         count = 0
-        for line in fseq.readlines():
-            if line[0] != ' ':
-                if line[0] != '>':
-                    sequences.append(line.upper().strip('\n'))
-        for number in range(len(sequences)):
-            for key in motifs.keys():
-                count = 0
-                sequence = sequences[number]
-                motif = motifs[key]
-                threshold = thresholds[key]
-                count += motif_compare(sequence, motif, threshold)
+        sequence = sequences[number]
+        motif = motifs[key]
+        threshold = thresholds[key]
+        count += motif_compare(sequence, motif, threshold)
 
-                counts.append(count)
-            print(count)
-        counts = np.array(counts)
-        counts = counts.reshape(len(sequences), -1)
-        print(counts)
-        print(counts.shape)
-        file = 'feature/motif/' + cell_line + '_' + set + '_motif.txt'
-        np.savetxt(file, counts)
+        counts.append(count)
+    print(count)
+counts = np.array(counts)
+counts = counts.reshape(len(sequences), -1)
+if not os.path.exists('feature'):
+    os.makedirs('feature')
+output_file='feature/'+ cell_line+'_'+set+'_motif.txt'
+if not os.path.exists(output_file):
+    output_file = open(output_file, "w")
+    np.savetxt(output_file, counts)
+    output_file.close()

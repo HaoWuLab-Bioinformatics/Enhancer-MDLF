@@ -1,10 +1,15 @@
+import argparse
+
 import numpy as np
 import torch
 import torch.nn as nn
-# from keras.layers.convolutional import Conv2D
 import os
 
-
+parser = argparse.ArgumentParser(description='Extract DNA2vec Features')
+parser.add_argument('--input_file',required=True,help='Input file (cell_line.fasta) e.g.data/train/GM12878.fasta')
+parser.add_argument('--cell_line',required=True,help='the extracted dataset name e.g. GM12878')
+parser.add_argument('--set',required=True,help='the extracted dataset for training or testing e.g. train')
+args = parser.parse_args()
 def word_embedding(filename, index, word2vec):
     f = open(filename, 'r')
     sequence = []
@@ -32,7 +37,6 @@ def word_embedding(filename, index, word2vec):
 
     feature_dna2vec = []
     for number in range(len(kmer_list)):
-        # print(number)
         feature_seq = []
         for i in range(len(kmer_list[number])):
             kmer_index = kmer_list[number][i]
@@ -42,9 +46,6 @@ def word_embedding(filename, index, word2vec):
         feature_seq_tensor = torch.unsqueeze(feature_seq_tensor, 0)
         feature_seq_tensor = torch.unsqueeze(feature_seq_tensor, 0)
         feature_seq_tensor_avg = nn.AdaptiveAvgPool1d(10000)(feature_seq_tensor)
-        # feature_seq_numpy = feature_seq_tensor.numpy()
-
-        # print(feature_seq_numpy)
         feature_seq_numpy = feature_seq_tensor_avg.numpy()
         feature_seq_numpy = np.squeeze(feature_seq_numpy)
         feature_seq_numpy = np.squeeze(feature_seq_numpy)
@@ -55,23 +56,23 @@ def word_embedding(filename, index, word2vec):
 
     return feature_dna2vec
 
-
-cell_lines = ['NHLF', 'GM12878', 'HEK293', 'HMEC', 'HSMM', 'HUVEC', 'K562', 'NHEK']
+input_file = args.input_file
+cell_line=args.cell_line
+set =args.set
 f = open('dna2vec/dna2veck3_index.txt', 'r')
 index = f.read()
 f.close()
 index = index.strip().split('\n')
 word2vec = np.loadtxt('dna2vec/dna2veck3_vec.txt')
-for cell_line in cell_lines:
-    for set in ['train', 'test']:
-        # for set in ['train']:
-        # filename = 'data/' + set + '/' + cell_line + '.fasta'
-        filename = 'dataset/' + cell_line + '/enhancers/' + set + '/' + 'enhancers.fasta'
-        feature_dna2vec = word_embedding(filename, index, word2vec)
-        feature_dna2vec = np.array(feature_dna2vec)
-        print(feature_dna2vec.shape)
-        print(feature_dna2vec.dtype)
-        feature_dna2vec = feature_dna2vec.astype('float64')
-        # file = 'EPfeature/dna2veck3/' + cell_line + '_' + set + '_dna2veck3.txt'
-        file = 'feature/dna2veck3/' + cell_line + '_' + set + '_dna2veck3.txt'
-        np.savetxt(file, feature_dna2vec)
+feature_dna2vec = word_embedding(input_file, index, word2vec)
+feature_dna2vec = np.array(feature_dna2vec)
+print(feature_dna2vec.shape)
+print(feature_dna2vec.dtype)
+feature_dna2vec = feature_dna2vec.astype('float64')
+if not os.path.exists('feature'):
+    os.makedirs('feature')
+output_file='feature/'+ cell_line+'_'+set+'_dna2vec.txt'
+if not os.path.exists(output_file):
+    output_file = open(output_file, "w")
+    np.savetxt(output_file, feature_dna2vec)
+    output_file.close()

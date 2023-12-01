@@ -1,13 +1,12 @@
+import argparse
+
 import numpy as np
 from sklearn.metrics import f1_score, accuracy_score, precision_recall_fscore_support
 from sklearn.metrics import roc_auc_score, matthews_corrcoef, average_precision_score, balanced_accuracy_score
-from keras.optimizers import Adam
 from sklearn.model_selection import KFold, GroupKFold, train_test_split, StratifiedKFold
 import tensorflow as tf
 from tensorflow.keras import backend as K
-from keras.callbacks import EarlyStopping, ModelCheckpoint
 from imblearn.under_sampling import RandomUnderSampler
-from keras.models import load_model
 import sys
 import shap
 import os
@@ -19,20 +18,24 @@ os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 import network
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LogisticRegression
-from keras.layers.convolutional import Conv2D, Conv1D
-from keras.layers.convolutional import MaxPooling2D, MaxPooling1D
-from keras.layers.core import Dense, Activation, Flatten, Dropout
-from keras.models import Sequential
-from keras.models import load_model
 from tensorflow.keras.optimizers import SGD, RMSprop, Adam, Adadelta
 from tensorflow.keras.callbacks import EarlyStopping
-from keras.callbacks import ModelCheckpoint
 from sklearn.model_selection import train_test_split
 
 # from tensorflow.compat.v1.keras.backend import get_session
 
 tf.compat.v1.disable_v2_behavior()
+parser = argparse.ArgumentParser(description='SHAP.')
+parser.add_argument('--lr',default=0.0001,help='learning rate')
+parser.add_argument('--max_epoch',default=200,help='max_epoch for training')
+parser.add_argument('--batch_size',default=100,help='max_epoch for training')
+parser.add_argument('--dropout_rate1',default=0.6,help='dropout_rate for model before concatenate')
+parser.add_argument('--alpha',default=0.5,help='alpha for focal loss')
+parser.add_argument('--gamma',default=3,help='gamma for focal loss')
+parser.add_argument('--cell_line',default='GM12878',help='cell line for train and prediction')
 
+
+args = parser.parse_args()
 
 def noramlization(data, filename):
     f = open(filename, 'r')
@@ -70,13 +73,13 @@ def binary_focal_loss(alpha, gamma):
 
 
 # data load
-cell_line = 'NHLF'
+cell_line = args.cell_line
 file_train = 'data/train/' + cell_line + '.fasta'
-x_train = np.loadtxt('feature/motifcount/pvalue0.0001/' + cell_line + '_train_motif.txt')
+x_train = np.loadtxt('feature/motif/' + cell_line + '_train_motif.txt')
 x_train = noramlization(x_train, file_train)
 
 file_test = 'data/test/' + cell_line + '.fasta'
-x_test = np.loadtxt('feature/motifcount/pvalue0.0001/' + cell_line + '_test_motif.txt')
+x_test = np.loadtxt('feature/motif/' + cell_line + '_test_motif.txt')
 x_test = noramlization(x_test, file_test)
 
 y_train = np.loadtxt('data/train/' + cell_line + '_y_train.txt')
@@ -85,23 +88,17 @@ y_test = 'data/test/' + cell_line + '_y_test.txt'
 data_shape = x_train.shape[1:2]
 
 # parameter setting
-MAX_EPOCH = 50
-BATCH_SIZE = 100
-learning_rate = 0.0001
-dropout_rate1 = 0.6
-alpha = 0.5
-gamma = 3
+MAX_EPOCH = args.max_epoch
+BATCH_SIZE = args.batch_size
+learning_rate = args.lr
+dropout_rate1 = args.dropout_rate1
+alpha = args.alpha
+gamma = args.gamma
 # model construction
 
 LOSS = binary_focal_loss(alpha, gamma)
 model = network.linear_motif(data_shape, dropout_rate1, )
 
-# filepath = "model/ceshi/" + cell_line + "_model_cnn.hdf5"
-# filepath = "model/dna2vecdim500/" + cell_lines + "_" + str(kernel_num) + "_" + str(
-#     kernel_size) + "_" + str(
-#     pool_size) + "_" + str(
-#     dropout_rate1) + "_" + str(dropout_rate2) + "_" + str(stride) + "_model_cnn.hdf5"
-# checkpoint = ModelCheckpoint(filepath, monitor='val_loss', verbose=1, save_best_only=True)
 early_stopping_monitor = EarlyStopping(monitor='val_loss', patience=10)
 model.compile(loss=LOSS, optimizer=Adam(lr=learning_rate), metrics=['accuracy'])
 kf = StratifiedKFold(5, shuffle=True, random_state=10).split(x_train, y_train)
@@ -115,24 +112,20 @@ for j, (train_index, test_index) in enumerate(kf):
                         callbacks=[early_stopping_monitor])
     print(j + 1)
 
-# early_stopping_monitor = EarlyStopping(monitor='val_loss', patience=5)
-# model = network.linear_motif(data_shape,dropout_rate1)
-# model.compile(loss='binary_crossentropy', optimizer=Adam(lr=learning_rate), metrics=['accuracy'])
-# model.fit(x=x_train, y=y_train, batch_size=BATCH_SIZE, epochs=MAX_EPOCH, validation_data=(
-#     x_val, y_val), callbacks=[early_stopping_monitor])
 # SHAP analysis
 shap.initjs()
-# background = x_train[np.random.choice(x_train.shape[0], 2000, replace=False)]
 explainer = shap.DeepExplainer(model, x_train)
 shap_values = explainer.shap_values(x_test)
-# print(np.array(shap_values).shape)
+
 shap_values = np.squeeze(np.array(shap_values))
 feature_importance = np.abs(shap_values).mean(axis=0)
-# 获取特征贡献度从大到小的排序索引
+
 sorted_indices = np.argsort(feature_importance)[::-1]
-# 输出特征索引
+
 print(np.array(sorted_indices))
-# 输出shap图
+
+y_base = explainer.expected_value
+print(y_base)
 shap.summary_plot(shap_values, x_test, max_display=50)
+shap.force_plot(explainer.expected_value, shap_values, x_test)
 print(cell_line)
-# shap.summary_plot(shap_values, x_test, plot_type="bar")
