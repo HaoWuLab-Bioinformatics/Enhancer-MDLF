@@ -1,7 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" autoUpload="Always" serverName="zhangyao@211.87.232.99:22 password (2)" remoteFilesAllowedToDisappearOnAutoupload="false">
+  <component name="PublishConfigData" autoUpload="Always" serverName="zhangyao@202.194.33.195:22 password (2)" remoteFilesAllowedToDisappearOnAutoupload="false">
     <serverData>
+      <paths name="meizhangyu@211.87.232.99:22 password">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="zhangyao@202.194.33.195:22 password (2)">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/enhancer-mdlf" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
       <paths name="zhangyao@211.87.232.99:22 password (2)">
         <serverdata>
           <mappings>
