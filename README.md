@@ -20,8 +20,6 @@ tensorflow 2.2.0
 scikit-learn  
 numpy  
 See requirements.txt for all detailed libraries  
-Users can install all dependencies of the project by running the script:  
-`pip install -r requirements.txt`  
 ## Usage
 ### Step 0. Prepare dataset
 We have provided enhancer training and test set data and labels for eight cell lines in the following directory:  
@@ -29,8 +27,14 @@ training set data : 'data/train/${cell line name}.fasta'  (**e.g.** 'data/train/
 training set label : 'data/train/${cell line name}_y_train.txt'  (**e.g.** 'data/train/GM12878_y_train.txt')  
 test set data : 'data/test/${cell line name}.fasta'  (**e.g.** 'data/test/GM12878.fasta')  
 test set label : 'data/test/${cell line name}_y_test.txt'  (**e.g.** 'data/test/GM12878_y_test.txt')  
-If users want to run Enhancer-MDLF using their own dataset , please organize the data in the format described above.  
-### Step 1. Extract features of enhancers
+If users want to run Enhancer-MDLF using their own dataset , please organize the data in the format described above. 
+### Step 1. setup environment
+First, in order to avoid conflicts between the project's packages and the user's commonly used environment, we recommend that users create a new conda virtual environment named test through the following script.  
+`conda create -n test python=3.8`  
+`conda activate test`  
+Later, users can install all dependencies of the project by running the script:  
+`pip install -r requirements.txt`  
+### Step 2. Extract features of enhancers
 Before running Enhancer-MDLF,users should extract features of enhancers through run the script to extract dna2vec-based features and motif-based features as follows:  
 #### necessary input  
 input = 'the data file from which you want to extract features.The file naming format is the same as in step 0.'  
@@ -44,7 +48,7 @@ set = 'the extracted data for training or testing'
 **e.g.**`python motif_find.py --input_file data/train/GM12878.fasta --cell_line GM12878 --set train`  
 **e.g.**`python motif_find.py --input_file data/test/GM12878.fasta --cell_line GM12878 --set test`  
 The output feature files will be saved in the 'feature' directory
-### Step 2. Run Enhancer-MDLF:  
+### Step 3. Run Enhancer-MDLF:  
 Users can run the script as follows to compile and run Enhancer-MDLF:    
 #### necessary input  
 cell_line = 'the cell line name for train and prediction'  
