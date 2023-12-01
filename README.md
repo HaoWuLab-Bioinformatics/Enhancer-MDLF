@@ -20,7 +20,7 @@ tensorflow 2.2.0
 scikit-learn  
 numpy  
 See requirements.txt for all detailed libraries  
-Users can install all dependencies of the project by running the script  
+Users can install all dependencies of the project by running the script:  
 `pip install -r requirements.txt`  
 ## Usage
 ### Step 0. Prepare dataset
