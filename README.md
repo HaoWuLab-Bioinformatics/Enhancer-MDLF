@@ -20,6 +20,8 @@ tensorflow 2.2.0
 scikit-learn  
 numpy  
 See requirements.txt for all detailed libraries  
+Users can install all dependencies of the project by running the script  
+`pip install -r requirements.txt`  
 ## Usage
 ### Step 0. Prepare dataset
 We have provided enhancer training and test set data and labels for eight cell lines in the following directory:  
