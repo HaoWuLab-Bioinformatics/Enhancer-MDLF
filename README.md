@@ -9,6 +9,7 @@ The folder "**generic data**" contains the data of the enhancer created by Liu e
 The folder "**model**" contains the trained models on eight cell lines and the pre-trained models are trained on all cell lines for use or validation.  
 The folder "**dna2vec**" contains the pre-trained DNA vectors provided in dna2vec[2].  
 The folder "**motif**" contains the position weight matrix (PWM) of motifs and the p-value threshold score from the HOCOMOCO Human v11 database[3].  
+The folder "**force-plot**" contains the force plot interaction diagrams obtained through the SHAP interpretation framework on eight cell lines.  
 The file "**network.py**" is the code of the network architecture.  
 The file "**main.py**" is the code of the entire model.   
 The file "**dna2vec_code.py**" is the code used to extract dna2vec features.  
