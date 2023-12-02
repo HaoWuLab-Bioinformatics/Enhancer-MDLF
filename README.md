@@ -21,7 +21,7 @@ scikit-learn
 numpy  
 See requirements.txt for all detailed libraries  
 ## Usage 
-At each step, we have given the execution code of GM12878 cell line as an example, and the user will get the test results of Enhancer-MDLF on GM12878 after executing all of them according to the example.
+At each step, we have given the execution code of GM12878 cell line as an example, and users will get the test results of Enhancer-MDLF on GM12878 after executing all of them according to the example.
 ### Step 0. Prepare dataset
 We have provided enhancer training and test set data and labels for eight cell lines in the following directory:  
 training set data : 'data/train/${cell line name}.fasta'  (**e.g.** 'data/train/GM12878.fasta')  
@@ -42,9 +42,11 @@ input = 'the data file from which you want to extract features.The file naming f
 cell_line = 'the cell line name for feature exrtraction'  
 set = 'the extracted data for training or testing'  
 #### run the script
+(1) extract dna2vec feature  
 `python dna2vec_code.py --input_file ${input} --cell_line ${cell_line} --set ${set}`   
 **e.g.**`python dna2vec_code.py --input_file data/train/GM12878.fasta --cell_line GM12878 --set train`  
 **e.g.**`python dna2vec_code.py --input_file data/test/GM12878.fasta --cell_line GM12878 --set test`  
+(2) extract motif feature  
 `python motif_find.py --input_file ${input} --cell_line ${cell_line} --set ${set}`  
 **e.g.**`python motif_find.py --input_file data/train/GM12878.fasta --cell_line GM12878 --set train`  
 **e.g.**`python motif_find.py --input_file data/test/GM12878.fasta --cell_line GM12878 --set test`  
