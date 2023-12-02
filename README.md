@@ -20,7 +20,8 @@ tensorflow 2.2.0
 scikit-learn  
 numpy  
 See requirements.txt for all detailed libraries  
-## Usage
+## Usage 
+At each step, we have given the execution code of GM12878 cell line as an example, and the user will get the test results of Enhancer-MDLF on GM12878 after executing all of them according to the example.
 ### Step 0. Prepare dataset
 We have provided enhancer training and test set data and labels for eight cell lines in the following directory:  
 training set data : 'data/train/${cell line name}.fasta'  (**e.g.** 'data/train/GM12878.fasta')  
