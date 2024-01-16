@@ -15,20 +15,24 @@ The file "**main.py**" is the code of the entire model.
 The file "**dna2vec_code.py**" is the code used to extract dna2vec features.  
 The file "**motif_find.py**" is the code used to extract motif features.  
 The file "**SHAP.py**" is the code for exploring important motifs.  
+The file "**dockerfile**" is the text file used to build Docker container images.  
+The file "**start project.sh**" is the script file used to run Docker container images.  
+
 ## Dependency
 Python 3.8  
+pip 23.3.1  
 tensorflow 2.2.0  
 scikit-learn  
 numpy  
 See requirements.txt for all detailed libraries  
 ## Usage 
-At each step, we have given the execution code of GM12878 cell line as an example, and users will get the test results of Enhancer-MDLF on GM12878 after executing all of them according to the example.
+At each step, we have given the execution code of NHLF cell line as an example, and users will get the test results of Enhancer-MDLF on NHLF after executing all of them according to the example.
 ### Step 0. Prepare dataset
 We have provided enhancer training and test set data and labels for eight cell lines in the following directory:  
-training set data : 'data/train/${cell line name}.fasta'  (**e.g.** 'data/train/GM12878.fasta')  
-training set label : 'data/train/${cell line name}_y_train.txt'  (**e.g.** 'data/train/GM12878_y_train.txt')  
-test set data : 'data/test/${cell line name}.fasta'  (**e.g.** 'data/test/GM12878.fasta')  
-test set label : 'data/test/${cell line name}_y_test.txt'  (**e.g.** 'data/test/GM12878_y_test.txt')  
+training set data : 'data/train/${cell line name}.fasta'  (**e.g.** 'data/train/NHLF.fasta')  
+training set label : 'data/train/${cell line name}_y_train.txt'  (**e.g.** 'data/train/NHLF_y_train.txt')  
+test set data : 'data/test/${cell line name}.fasta'  (**e.g.** 'data/test/NHLF.fasta')  
+test set label : 'data/test/${cell line name}_y_test.txt'  (**e.g.** 'data/test/NHLF_y_test.txt')  
 If users want to run Enhancer-MDLF using their own dataset , please organize the data in the format described above. 
 ### Step 1. setup environment
 First, in order to avoid conflicts between the project's packages and the user's commonly used environment, we recommend that users create a new conda virtual environment named test through the following script.  
@@ -45,12 +49,12 @@ set = 'the extracted data for training or testing'
 #### run the script
 (1) extract dna2vec feature  
 `python dna2vec_code.py --input_file ${input} --cell_line ${cell_line} --set ${set}`   
-**e.g.**`python dna2vec_code.py --input_file data/train/GM12878.fasta --cell_line GM12878 --set train`  
-**e.g.**`python dna2vec_code.py --input_file data/test/GM12878.fasta --cell_line GM12878 --set test`  
+**e.g.**`python dna2vec_code.py --input_file data/train/NHLF.fasta --cell_line NHLF --set train`  
+**e.g.**`python dna2vec_code.py --input_file data/test/NHLF.fasta --cell_line NHLF --set test`  
 (2) extract motif feature  
 `python motif_find.py --input_file ${input} --cell_line ${cell_line} --set ${set}`  
-**e.g.**`python motif_find.py --input_file data/train/GM12878.fasta --cell_line GM12878 --set train`  
-**e.g.**`python motif_find.py --input_file data/test/GM12878.fasta --cell_line GM12878 --set test`  
+**e.g.**`python motif_find.py --input_file data/train/NHLF.fasta --cell_line NHLF --set train`  
+**e.g.**`python motif_find.py --input_file data/test/NHLF.fasta --cell_line NHLF --set test`  
 The output feature files will be saved in the 'feature' directory
 ### Step 3. Run Enhancer-MDLF:  
 Users can run the script as follows to compile and run Enhancer-MDLF:    
@@ -58,7 +62,18 @@ Users can run the script as follows to compile and run Enhancer-MDLF:
 cell_line = 'the cell line name for train and prediction'  
 #### run the script
 `python main.py --cell_line ${cell_line}`    
-e.g.`python main.py --cell_line GM12878`   
+e.g.`python main.py --cell_line NHLF`   
+## Usage of Docker Images
+We also provide the Dockerfile to support users in building and running a Docker image for the established environment.Users can perform the following steps.
+### Step 0. Prepare dataset
+This step is the same as Step 0 in the Usage.
+### Step 1. build a docker image 
+`docker build -t test . `   
+After this step, users have successfully built a Docker image named "test".
+### Step 2. run the docker image   
+`docker run --rm -it -e PARAM1=${cell_line} test`  
+e.g.`docker run --rm -it -e PARAM1=NHLF test`   
+After this step, users have successfully run the Docker image named "test" and obtained prediction results on the NHLF cell line.
 ## Reference
 [1] Liu B, Fang L, Long R, et al. iEnhancer-2L: A two-layer predictor for identifying enhancers and their strength by pseudo k-tuple nucleotide composition. Bioinformatics 2016; 32:362–369  
 [2] Ng P. dna2vec: Consistent vector representations of variable-length k-mers. arXiv preprint arXiv 2017;1701.06279
