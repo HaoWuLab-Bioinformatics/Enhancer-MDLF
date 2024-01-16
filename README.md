@@ -34,7 +34,7 @@ training set label : 'data/train/${cell line name}_y_train.txt'  (**e.g.** 'data
 test set data : 'data/test/${cell line name}.fasta'  (**e.g.** 'data/test/NHLF.fasta')  
 test set label : 'data/test/${cell line name}_y_test.txt'  (**e.g.** 'data/test/NHLF_y_test.txt')  
 If users want to run Enhancer-MDLF using their own dataset , please organize the data in the format described above. 
-### Step 1. setup environment
+### Step 1. Setup environment
 First, in order to avoid conflicts between the project's packages and the user's commonly used environment, we recommend that users create a new conda virtual environment named test through the following script.  
 `conda create -n test python=3.8`  
 `conda activate test`  
