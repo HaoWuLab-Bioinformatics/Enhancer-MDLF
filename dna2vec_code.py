@@ -59,6 +59,7 @@ def word_embedding(filename, index, word2vec):
 input_file = args.input_file
 cell_line=args.cell_line
 set =args.set
+print('Extracting dna2vec features for the '+ set +' set of '+ cell_line)
 f = open('dna2vec/dna2veck3_index.txt', 'r')
 index = f.read()
 f.close()

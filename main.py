@@ -44,7 +44,7 @@ def EvaluateMetrics(y_test, proba, label):
     sp = tn / (tn + fp)
     mcc = matthews_corrcoef(y_test, label)
     precision, recall, fscore, support = precision_recall_fscore_support(y_test, label, average='binary')
-    print(aucv, '\t', bacc, '\t', mcc, '\t', sn, '\t', sp, '\t', fscore)
+    print('aucv= '+str(aucv)+'\t'+'bacc= '+str(bacc)+'\t'+'mcc= '+str(mcc)+'\t'+'sn= '+str(sn)+'\t'+'sp= '+str(sp)+'\t'+'fscore= '+str(fscore))
 
 
 def binary_focal_loss(alpha, gamma):

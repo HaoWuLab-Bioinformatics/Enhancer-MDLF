@@ -1,7 +1,7 @@
 import argparse
 
 import numpy as np
-
+from tqdm import tqdm
 import os
 parser = argparse.ArgumentParser(description='Extract motif Features')
 parser.add_argument('--input_file',required=True,help='Input file (cell_line.fasta) e.g.data/train/GM12878.fasta')
@@ -59,6 +59,7 @@ for key in thresholds.keys():
 input_file = args.input_file
 cell_line=args.cell_line
 set =args.set
+print('Extracting motif features for the '+ set +' set of '+ cell_line)
 fseq = open(input_file, 'r')
 sequences = []
 counts = []
@@ -67,16 +68,15 @@ for line in fseq.readlines():
     if line[0] != ' ':
         if line[0] != '>':
             sequences.append(line.upper().strip('\n'))
-for number in range(len(sequences)):
+for number in tqdm(range(len(sequences)), desc="Processing data", unit="item"):
+#for number in range(len(sequences)):
     for key in motifs.keys():
         count = 0
         sequence = sequences[number]
         motif = motifs[key]
         threshold = thresholds[key]
         count += motif_compare(sequence, motif, threshold)
-
         counts.append(count)
-    print(count)
 counts = np.array(counts)
 counts = counts.reshape(len(sequences), -1)
 if not os.path.exists('feature'):
