@@ -67,10 +67,10 @@ e.g.`python main.py --cell_line NHLF`
 We also provide the Dockerfile to support users in building and running a Docker image for the established environment.Users can perform the following steps.
 ### Step 0. Prepare dataset
 This step is the same as Step 0 in the Usage.
-### Step 1. build a docker image 
+### Step 1. Build a docker image 
 `docker build -t test . `   
 After this step, users have successfully built a Docker image named "test".
-### Step 2. run the docker image   
+### Step 2. Run the docker image   
 `docker run --rm -it -e PARAM1=${cell_line} test`  
 e.g.`docker run --rm -it -e PARAM1=NHLF test`   
 After this step, users have successfully run the Docker image named "test" and obtained prediction results on the NHLF cell line.
